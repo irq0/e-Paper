@@ -6,7 +6,7 @@
 *----------------
 * |	This version:   V3.0
 * | Date        :   2019-07-31
-* | Info        :   
+* | Info        :
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documnetation files (the "Software"), to deal
@@ -54,7 +54,7 @@ void DEV_Digital_Write(UWORD Pin, UBYTE Value)
 	bcm2835_gpio_write(Pin, Value);
 #elif USE_WIRINGPI_LIB
 	digitalWrite(Pin, Value);
-#elif  USE_LGPIO_LIB  
+#elif  USE_LGPIO_LIB
     lgGpioWrite(GPIO_Handle, Pin, Value);
 #elif USE_DEV_LIB
 	GPIOD_Write(Pin, Value);
@@ -78,7 +78,7 @@ UBYTE DEV_Digital_Read(UWORD Pin)
 	Read_value = bcm2835_gpio_lev(Pin);
 #elif USE_WIRINGPI_LIB
 	Read_value = digitalRead(Pin);
-#elif  USE_LGPIO_LIB  
+#elif  USE_LGPIO_LIB
     Read_value = lgGpioRead(GPIO_Handle,Pin);
 #elif USE_DEV_LIB
 	Read_value = GPIOD_Read(Pin);
@@ -105,7 +105,7 @@ void DEV_SPI_WriteByte(uint8_t Value)
 	bcm2835_spi_transfer(Value);
 #elif USE_WIRINGPI_LIB
 	wiringPiSPIDataRW(0,&Value,1);
-#elif  USE_LGPIO_LIB 
+#elif  USE_LGPIO_LIB
     lgSpiWrite(SPI_Handle,(char*)&Value, 1);
 #elif USE_DEV_LIB
 	DEV_HARDWARE_SPI_TransferByte(Value);
@@ -129,7 +129,7 @@ void DEV_SPI_Write_nByte(uint8_t *pData, uint32_t Len)
 	bcm2835_spi_transfernb((char *)pData,rData,Len);
 #elif USE_WIRINGPI_LIB
 	wiringPiSPIDataRW(0, pData, Len);
-#elif  USE_LGPIO_LIB 
+#elif  USE_LGPIO_LIB
     lgSpiWrite(SPI_Handle,(char*)pData, Len);
 #elif USE_DEV_LIB
 	DEV_HARDWARE_SPI_Transfer(pData, Len);
@@ -169,7 +169,7 @@ void DEV_GPIO_Mode(UWORD Pin, UWORD Mode)
 		pinMode(Pin, OUTPUT);
 		// Debug (" %d OUT \r\n",Pin);
 	}
-#elif  USE_LGPIO_LIB  
+#elif  USE_LGPIO_LIB
     if(Mode == 0 || Mode == LG_SET_INPUT){
         lgGpioClaimInput(GPIO_Handle,LFLAGS,Pin);
         // printf("IN Pin = %d\r\n",Pin);
@@ -208,7 +208,7 @@ void DEV_Delay_ms(UDOUBLE xms)
 	bcm2835_delay(xms);
 #elif USE_WIRINGPI_LIB
 	delay(xms);
-#elif  USE_LGPIO_LIB  
+#elif  USE_LGPIO_LIB
     lguSleep(xms/1000.0);
 #elif USE_DEV_LIB
 	UDOUBLE i;
@@ -242,35 +242,6 @@ static int DEV_Equipment_Testing(void)
 	}
 	issue_str[sizeof(issue_str)-1] = '\0';
 	fclose(fp);
-
-	printf("Current environment: ");
-#ifdef RPI
-	char systems[][9] = {"Raspbian", "Debian", "NixOS"};
-	int detected = 0;
-	for(int i=0; i<3; i++) {
-		if (strstr(issue_str, systems[i]) != NULL) {
-			printf("%s\n", systems[i]);
-			detected = 1;
-		}
-	}
-	if (!detected) {
-		printf("not recognized\n");
-		printf("Built for Raspberry Pi, but unable to detect environment.\n");
-		printf("Perhaps you meant to 'make JETSON' instead?\n");
-		return -1;
-	}
-#endif
-#ifdef JETSON
-	char system[] = {"Ubuntu"};
-	if (strstr(issue_str, system) != NULL) {
-		printf("%s\n", system);
-	} else {
-		printf("not recognized\n");
-		printf("Built for Jetson, but unable to detect environment.\n");
-		printf("Perhaps you meant to 'make RPI' instead?\n");
-		return -1;
-	}
-#endif
 	return 0;
 }
 
@@ -300,7 +271,7 @@ void DEV_GPIO_Init(void)
 
 	DEV_Digital_Write(EPD_CS_PIN, 1);
     DEV_Digital_Write(EPD_PWR_PIN, 1);
-    
+
 }
 /******************************************************************************
 function:	Module Initialize, the library and initialize the pins, SPI protocol
@@ -423,7 +394,7 @@ void DEV_Module_Exit(void)
     DEV_Digital_Write(EPD_PWR_PIN, 0);
 	DEV_Digital_Write(EPD_DC_PIN, 0);
 	DEV_Digital_Write(EPD_RST_PIN, 0);
-#elif USE_DEV_LIB 
+#elif USE_DEV_LIB
     DEV_Digital_Write(EPD_CS_PIN, 0);
     DEV_Digital_Write(EPD_PWR_PIN, 0);
 	DEV_Digital_Write(EPD_DC_PIN, 0);
